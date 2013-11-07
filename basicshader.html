@@ -1,0 +1,113 @@
+<div id="container" style="background-color:black"></div>
+
+<script type="text/javascript" src="three.min.js"></script>
+
+<script id="fragmentShader" type="x-shader/x-fragment">
+
+	void main() {
+		gl_FragColor = vec4(1.2, .5, 0.0, 1.0);
+	}
+
+</script>
+
+<script id="vertexShader" type="x-shader/x-vertex">
+
+	void main()
+	{
+		vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+		gl_Position = projectionMatrix * mvPosition;
+
+	}
+
+</script>
+
+<script type="text/javascript">
+	var container;
+
+	var clock = new THREE.Clock();
+
+	var camera, scene, renderer, composer;
+
+	var uniforms, material, mesh;
+
+	var mouseX = 0, mouseY = 0,
+	lat = 0, lon = 0, phy = 0, theta = 0;
+
+	var width = window.innerWidth || 2;
+	var height = window.innerHeight || 2;
+
+	var windowHalfX = width / 2;
+	var windowHalfY = height / 2;
+
+	init();
+	animate();
+
+	function init() {
+
+		container = document.getElementById( 'container' );
+
+		camera = new THREE.PerspectiveCamera( 35, windowHalfX / windowHalfY, 1, 3000 );
+		camera.position.z = 4;
+
+		scene = new THREE.Scene();
+
+		uniforms = { 
+
+		};
+
+		var size = 0.65;
+
+		material = new THREE.ShaderMaterial( {
+
+			uniforms: uniforms,
+			vertexShader: document.getElementById( 'vertexShader' ).textContent,
+			fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+
+		} );
+
+		mesh = new THREE.Mesh( new THREE.TorusGeometry( size, 0.3, 30, 30 ), material );
+		mesh.rotation.x = 0.3;
+		scene.add( mesh );
+
+		//
+
+		renderer = new THREE.WebGLRenderer( { antialias: true } );
+		container.appendChild( renderer.domElement );
+		renderer.autoClear = false;
+
+		onWindowResize();
+
+		window.addEventListener( 'resize', onWindowResize, false );
+
+	}
+	function onWindowResize( event ) {
+
+		// uniforms.resolution.value.x = window.innerWidth;
+		// uniforms.resolution.value.y = window.innerHeight;
+
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+
+	}
+
+	function animate() {
+		requestAnimationFrame( animate );
+		render();
+	}
+
+	function render() {
+
+		var delta = 5 * clock.getDelta();
+
+		// uniforms+= 0.2 * delta;
+
+		mesh.rotation.y += 0.0125 * delta;
+		mesh.rotation.x += 0.05 * delta;
+
+		renderer.clear();
+		renderer.render( scene, camera );
+
+	}
+</script>
