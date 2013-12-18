@@ -1,0 +1,202 @@
+		<!DOCTYPE html>
+		<html lang="en">
+			<head>
+				<title>mack-midterm</title>
+				<meta charset="utf-8">
+				<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+				<style>
+					body {
+						font-family: Monospace;
+						/*background-color: #000;*/
+						color: #fff;
+						margin: 0px;
+						overflow: hidden;
+					}
+					#info {
+						color: #fff;
+						position: absolute;
+						top: 10px;
+						width: 100%;
+						text-align: center;
+						z-index: 100;
+						display:block;
+					}
+					#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+				</style>
+			</head>
+
+			<body>
+
+				<script src="/libs/three.min.js"></script>
+				<script src="/libs/OBJLoader.js"></script>
+				<script src="/libs/TrackballControls.js"></script>
+				<script src="/libs/Detector.js"></script>
+				<script src="/libs/stats.min.js"></script>
+				<script src="/libs/dat.gui.min.js"></script>
+
+
+				<script>
+
+					var container, stats;
+
+					var camera, controls, scene, renderer;
+
+					var mouseX = 0, mouseY = 0;
+
+					var windowHalfX = window.innerWidth / 2;
+					var windowHalfY = window.innerHeight / 2;
+
+					//gui
+					var gui = new dat.GUI({ autoPlace: false });
+
+					// var customContainer = document.getElementById('my-gui-container');
+					// customContainer.appendChild(gui.domElement);
+
+
+					init();
+					animate();
+
+
+					function init() {
+
+						container = document.createElement( 'div' );
+						document.body.appendChild( container );
+
+						camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+						// camera.position.set( -15, 10, 15 );
+						camera.position.x = 0;
+            			camera.position.y = 0;
+            			camera.position.z = 600;
+
+            			controls = new THREE.TrackballControls(camera);
+
+						//Orbit control??
+						// controls = new THREE.OrbitControls( camera );
+
+						// var camera = new THREE.PerspectiveCamera(
+    		// 				35,         // Field of view
+    		// 				800 / 640,  // Aspect ratio
+   			// 				.1,         // Near
+    		// 				10000       // Far
+						// 	);
+						// camera.position.set( -15, 10, 15 );
+						// camera.lookAt( scene.position );
+
+						// scene
+
+						scene = new THREE.Scene();
+
+						var ambient = new THREE.AmbientLight( 0x272729 );
+						scene.add( ambient );
+
+						var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+						directionalLight.position.set( 0, 0, 1 );
+						scene.add( directionalLight );
+
+						// 	// Ground
+
+						// var plane = new THREE.Mesh( new THREE.PlaneGeometry( 40, 40 ), new THREE.MeshPhongMaterial( { ambient: 0x999999, color: 0x999999, specular: 0x101010 } ) );
+						// plane.rotation.x = -Math.PI/2;
+						// plane.position.y = -0.5;
+						// scene.add( plane );
+
+						// plane.receiveShadow = true;
+
+						// Loader
+
+						var manager = new THREE.LoadingManager();
+						manager.onProgress = function ( item, loaded, total ) {
+
+							console.log( item, loaded, total );
+
+						};
+
+						// models
+						var iphones = new THREE.Object3D();
+
+						for ( var i = 0; i < 100; i ++ ) {
+							var loader = new THREE.OBJLoader( manager );
+							loader.load( '/models/iphone4-3.js', function ( object ) {
+								object.traverse( function ( child ) {
+									if ( child instanceof THREE.Mesh ) {
+									// child.material.map = texture;
+									}
+								} );
+								// object.position.y = 0;
+								object.position.y = Math.random() * 200 - 100;
+								object.position.x = Math.random() * 200 - 100;
+								object.position.z = Math.random() * 200 - 100;
+
+								object.rotation.y = Math.random() * 200 - 100;
+								object.rotation.x = Math.random() * 200 - 100;
+								object.rotation.z = Math.random() * 200 - 100;
+								iphones.add( object );
+							} );
+							scene.add( iphones );
+							console.log ( iphones.position );
+						}
+
+						//
+
+						renderer = new THREE.WebGLRenderer();
+						renderer.setSize( window.innerWidth, window.innerHeight );
+						container.appendChild( renderer.domElement );
+
+						document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+						//
+
+						window.addEventListener( 'resize', onWindowResize, false );
+
+					}
+
+					function onWindowResize() {
+
+						windowHalfX = window.innerWidth / 2;
+						windowHalfY = window.innerHeight / 2;
+
+						camera.aspect = window.innerWidth / window.innerHeight;
+						camera.updateProjectionMatrix();
+
+						renderer.setSize( window.innerWidth, window.innerHeight );
+
+					}
+
+					function onDocumentMouseMove( event ) {
+
+						// mouseX = ( event.clientX - windowHalfX ) / 2;
+						// mouseY = ( event.clientY - windowHalfY ) / 2;
+						// mouseX = (event.clientX - windowHalfX) / 1.1;
+						// mouseY = (event.clientY - windowHalfY) / 1.1;
+
+					}
+
+					function animate() {
+
+						requestAnimationFrame( animate );
+						render();
+
+					}
+
+					function render() {
+						// Original
+						// camera.position.x += ( mouseX - camera.position.x ) * .05;
+						// camera.position.y += ( - mouseY - camera.position.y ) * .05;
+
+
+						// Orthographic camera example
+						// camera.position.x = Math.cos( timer ) * 200;
+						// camera.position.y = Math.sin( timer ) * 200;
+
+						controls.update();
+
+						camera.lookAt( scene.position );
+
+						renderer.render( scene, camera );
+
+					}
+
+				</script>
+
+			</body>
+		</html>

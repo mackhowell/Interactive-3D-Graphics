@@ -44,7 +44,7 @@
 				document.body.appendChild( container );
 
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = 500;
+				camera.position.z = 5000;
 
 				scene = new THREE.Scene();
 
@@ -53,7 +53,7 @@
 
 				group = new THREE.Object3D();
 
-				for ( var i = 0; i < 200; i ++ ) {
+				for ( var i = 0; i < 1000; i ++ ) {
 
 					var mesh = new THREE.Mesh( geometry, material );
 					mesh.position.x = Math.random() * 2000 - 1000;
@@ -120,12 +120,12 @@
 
 				camera.position.x += ( mouseX - camera.position.x ) * .05;
 				camera.position.y += ( - mouseY - camera.position.y ) * .05;
-				camera.lookAt( scene.position );
+				// camera.lookAt( scene.position );
 
-				var currentSeconds = Date.now();
-				group.rotation.x = Math.sin( currentSeconds * 0.0007 ) * 0.5;
-				group.rotation.y = Math.sin( currentSeconds * 0.0003 ) * 0.5;
-				group.rotation.z = Math.sin( currentSeconds * 0.0002 ) * 0.5;
+				// var currentSeconds = Date.now();
+				// group.rotation.x = Math.sin( currentSeconds * 0.0007 ) * 0.5;
+				// group.rotation.y = Math.sin( currentSeconds * 0.0003 ) * 0.5;
+				// group.rotation.z = Math.sin( currentSeconds * 0.0002 ) * 0.5;
 
 				renderer.render( scene, camera );
 

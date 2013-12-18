@@ -7,8 +7,13 @@
 	<script type="text/javascript" src="/libs/dat.gui.min.js"></script>
 	<script src="/libs/Three.js"></script>
 	<script src="/libs/jquery-1.6.4.js"></script>
-	
-	<script>
+	<script src="/libs/Detector.js"></script>
+	<script src="/libs/OBJLoader.js"></script>
+	<script src="/libs/stats.min.js"></script>
+
+
+
+<script>
 	
 var camera, scene, renderer, geometry, material, mesh;
 
@@ -16,40 +21,37 @@ init();
 animate();
 
 function init() {
-
-
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.z = 3000;
+    camera.position.z = 1000;
     scene.add(camera);
 
-    geometry = new THREE.CubeGeometry(200, 200, 200);
+    geometry = new THREE.CubeGeometry(200, 200, 1000);
     material = new THREE.MeshNormalMaterial();
 
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
+
+
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(renderer.domElement);
-
 }
 
 function animate() {
 
-	mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.02;
+	mesh.rotation.x += 0.001;
+    mesh.rotation.y += 0.002;
     requestAnimationFrame(animate);
     render();
 
 }
 
 function render() {
-
     renderer.render(scene, camera);
-
 }
 
 // renderer.autoClear = false;
@@ -61,8 +63,3 @@ function render() {
 
 </body>
 </html>
-
-
-<!--     var text = new render();
-    var gui = new dat.GUI();
-    gui.add(text, 'rotation.x', -1.0, 1.0); -->
