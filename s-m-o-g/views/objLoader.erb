@@ -47,7 +47,7 @@
 					var windowHalfY = window.innerHeight / 2;
 
 					//gui
-					var gui = new dat.GUI({ autoPlace: false });
+					// var gui = new dat.GUI({ autoPlace: false });
 
 					// var customContainer = document.getElementById('my-gui-container');
 					// customContainer.appendChild(gui.domElement);
@@ -113,10 +113,11 @@
 
 						// models
 						var iphones = new THREE.Object3D();
+						var ipads = new THREE.Object3D();
 
-						for ( var i = 0; i < 100; i ++ ) {
+						for ( var i = 0; i < 10; i ++ ) {
 							var loader = new THREE.OBJLoader( manager );
-							loader.load( '/models/iphone4-3.js', function ( object ) {
+							loader.load( '/models/iphone-OBJ.obj', function ( object ) {
 								object.traverse( function ( child ) {
 									if ( child instanceof THREE.Mesh ) {
 									// child.material.map = texture;
