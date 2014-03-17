@@ -147,15 +147,16 @@
 						// });
 
 						var smog = [];   // An array of iphone groups, each object has data for 10 iphones.
-						var numClusters = 3;
-						var numPhones = 1;
+						var numClusters = 1;
+						var numPhones = 2;
 
 						// var objCluster = new THREE.Object3D();
 						var iphones = new THREE.Object3D();
+						var iphones2 = new THREE.Object3D();
 
 						// ALL CLUSTERS - makes multiple instances of iphones
 
-						for ( var i = 0; i < numClusters; i ++ ) {
+						// for ( var i = 0; i < numClusters; i ++ ) {
 								var loader = new THREE.OBJLoader( manager );
 
 							// EACH CLUSTER - loads in each iphone as child of iphones
@@ -173,29 +174,55 @@
 
 									iphones.add( object ); // each iphone is a child of iphones
 									// console.log('S M O G  =  ' + smog);
-									// scene.add( iphones );
+									scene.add( iphones );
+
+									// var geometry = object.scene.children[ 0 ].geometry;
+									// var material = object.scene.children[ 0 ].material;
+									// for ( var i = 0; i < 10; i ++ ) {
+									// 	var mesh = new THREE.Mesh( geometry, material );
+									// 	mesh.position.set( i * 100, 0, 0 );
+									// 	scene.add( mesh );
+									// }
 									
 								} );	
 							}
 
-							smog.push( iphones );
-							iphones.clone();
+							for ( var k = 0; k < numPhones; k ++ ) {
+								loader.load( '/models/iphone-OBJ.obj', function ( object ) {
+									
+									object.position.y = Math.random() * 50 - 25;
+									object.position.x = Math.random() * 50 - 25;
+									object.position.z = Math.random() * 50 - 25;
 
-						}
+									object.rotation.y = Math.random() * 50 - 25;
+									object.rotation.x = Math.random() * 50 - 25;
+									object.rotation.z = Math.random() * 50 - 25;
 
-						console.log ("NUMBER OF CLUSTERS IN SMOG = " + smog.length);
+									iphones2.add( object ); // each iphone is a child of iphones
 
-						for (var c = 0; c < smog.length; c ++) {
-							var myCluster = smog[c];
-							// myCluster.translateX(0);
-							// myCluster.translateY(20);
-							// myCluster.translateZ(0);
-							// myCluster.position.y = Math.random() * 50;
-							console.log( iphones.id );
-							// console.log("POSITION OF CLUSTER: " + myCluster.position);
-							scene.add(myCluster);
-							scene.updateMatrixWorld();
-						}
+									scene.add (iphones2);
+									
+								} );	
+							}
+
+							// smog.push( iphones );
+							// iphones.clone();
+
+						// }
+
+						// console.log ("NUMBER OF CLUSTERS IN SMOG = " + smog.length);
+
+						// for (var c = 0; c < smog.length; c ++) {
+						// 	var myCluster = smog[c];
+						// 	// myCluster.translateX(0);
+						// 	// myCluster.translateY(20);
+						// 	// myCluster.translateZ(0);
+						// 	// myCluster.position.y = Math.random() * 50;
+						// 	console.log( iphones.id );
+						// 	// console.log("POSITION OF CLUSTER: " + myCluster.position);
+						// 	scene.add(myCluster);
+						// 	scene.updateMatrixWorld();
+						// }
 
 						renderer = new THREE.WebGLRenderer();
 						renderer.setSize( window.innerWidth, window.innerHeight );
