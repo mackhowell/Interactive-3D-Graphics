@@ -32,7 +32,7 @@
 				<script src="/libs/TrackballControls.js"></script>
 				<script src="/libs/Detector.js"></script>
 				<script src="/libs/stats.min.js"></script>
-				<script src="/libs/dat.gui.min.js"></script>
+				<script src="/libs/dat-gui/build/dat.gui.min.js"></script>
 
 
 				<script>
@@ -46,7 +46,29 @@
 					var windowHalfX = window.innerWidth / 2;
 					var windowHalfY = window.innerHeight / 2;
 
+					var gui;
+
+					// var clock = new THREE.Clock();
+					
 					//gui
+
+					// var myGui = function() {
+					// 	this.speed = 0.8;
+					// 	this.numPhones = 10;
+					// };
+
+					// window.onload = function() {
+					// 	var text = new myGui();
+					// 	gui = new dat.GUI();
+					// 	gui.add(text, 'speed', -5, 5);
+					// 	gui.add(text, 'numPhones', 1, 100);
+					// };
+
+					// var gui = new dat.GUI({
+					// 	autoPlace: true;
+					// 	gui.add(text, 'eSMOG', -5, 5); // Min and max
+					// });
+
 					// var gui = new dat.GUI({ autoPlace: false });
 
 					// var customContainer = document.getElementById('my-gui-container');
@@ -66,9 +88,9 @@
 						// camera.position.set( -15, 10, 15 );
 						camera.position.x = 0;
             			camera.position.y = 0;
-            			camera.position.z = 600;
+            			camera.position.z = 300;
 
-            			controls = new THREE.TrackballControls(camera);
+            			// controls = new THREE.TrackballControls(camera);
 
 						//Orbit control??
 						// controls = new THREE.OrbitControls( camera );
@@ -107,47 +129,73 @@
 						var manager = new THREE.LoadingManager();
 						manager.onProgress = function ( item, loaded, total ) {
 
-							console.log( item, loaded, total );
+							console.log( "LoadingManager: " + item, loaded, total );
 
 						};
 
 						// models
-						var iphones = new THREE.Object3D();
-						var ipads = new THREE.Object3D();
+						// var iphones = new THREE.Object3D();
+						// var ipads = new THREE.Object3D();
 
-						for ( var i = 0; i < 10; i ++ ) {
-							var loader = new THREE.OBJLoader( manager );
-							loader.load( '/models/iphone-OBJ.obj', function ( object ) {
-								object.traverse( function ( child ) {
-									if ( child instanceof THREE.Mesh ) {
-									// child.material.map = texture;
-									}
-								} );
-								// object.position.y = 0;
-								object.position.y = Math.random() * 200 - 100;
-								object.position.x = Math.random() * 200 - 100;
-								object.position.z = Math.random() * 200 - 100;
-
-								object.rotation.y = Math.random() * 200 - 100;
-								object.rotation.x = Math.random() * 200 - 100;
-								object.rotation.z = Math.random() * 200 - 100;
-								iphones.add( object );
-							} );
-							scene.add( iphones );
-							console.log ( iphones.position );
-						}
-
-						// // model + MTL file
-
-						// var loader = new THREE.OBJMTLLoader();
-						// loader.load( '/models/iphone4-3.js', '/models/iphone4-3.mtl', function ( object ) {
-
-						// object.position.y = 0;
-						// scene.add( object );
-
+						// var loader = new THREE.OBJLoader( manager);
+						// loader.load( '/models/ipad-OBJ.obj', function ( object ) {
+						// 	object.traverse( function ( child ) {
+						// 	});
+						// object.position.x = Math.random() * 50 - 10;
+						// object.position.y = Math.random() * 50 - 10;
+						// object.position.z = Math.random() * 50 - 10;
 						// });
 
-						//
+						var smog = [];   // An array of iphone groups, each object has data for 10 iphones.
+						var numClusters = 3;
+						var numPhones = 1;
+
+						// var objCluster = new THREE.Object3D();
+						var iphones = new THREE.Object3D();
+
+						// ALL CLUSTERS - makes multiple instances of iphones
+
+						for ( var i = 0; i < numClusters; i ++ ) {
+								var loader = new THREE.OBJLoader( manager );
+
+							// EACH CLUSTER - loads in each iphone as child of iphones
+
+							for ( var j = 0; j < numPhones; j ++ ) {
+								loader.load( '/models/iphone-OBJ.obj', function ( object ) {
+									
+									object.position.y = Math.random() * 50 - 25;
+									object.position.x = Math.random() * 50 - 25;
+									object.position.z = Math.random() * 50 - 25;
+
+									object.rotation.y = Math.random() * 50 - 25;
+									object.rotation.x = Math.random() * 50 - 25;
+									object.rotation.z = Math.random() * 50 - 25;
+
+									iphones.add( object ); // each iphone is a child of iphones
+									// console.log('S M O G  =  ' + smog);
+									// scene.add( iphones );
+									
+								} );	
+							}
+
+							smog.push( iphones );
+							iphones.clone();
+
+						}
+
+						console.log ("NUMBER OF CLUSTERS IN SMOG = " + smog.length);
+
+						for (var c = 0; c < smog.length; c ++) {
+							var myCluster = smog[c];
+							// myCluster.translateX(0);
+							// myCluster.translateY(20);
+							// myCluster.translateZ(0);
+							// myCluster.position.y = Math.random() * 50;
+							console.log( iphones.id );
+							// console.log("POSITION OF CLUSTER: " + myCluster.position);
+							scene.add(myCluster);
+							scene.updateMatrixWorld();
+						}
 
 						renderer = new THREE.WebGLRenderer();
 						renderer.setSize( window.innerWidth, window.innerHeight );
@@ -155,11 +203,20 @@
 
 						document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
-						//
-
 						window.addEventListener( 'resize', onWindowResize, false );
 
 					}
+
+					// function update() {
+					// 	delta = clock.getDelta();
+					// 	var moveDistance = 100 * delta;
+					// 	// console.log('MOVE DISTANCE: ' + moveDistance);
+					// 	var newMatrix = iphones.matrix;        
+					// 	newMatrix.identity();
+					// 	//newCubeMatrix.multiplySelf(THREE.Matrix4.rotationYMatrix(cube.rotation.y));
+					// 	newMatrix.multiplySelf(THREE.Matrix4.translationMatrix(iphones.position.x, iphones.position.y, iphones.position.z + moveDistance));
+					// 	iphones.updateMatrix();
+					// }
 
 					function onWindowResize() {
 
@@ -175,17 +232,13 @@
 
 					function onDocumentMouseMove( event ) {
 
-						// mouseX = ( event.clientX - windowHalfX ) / 2;
-						// mouseY = ( event.clientY - windowHalfY ) / 2;
-						// mouseX = (event.clientX - windowHalfX) / 1.1;
-						// mouseY = (event.clientY - windowHalfY) / 1.1;
-
 					}
 
 					function animate() {
 
 						requestAnimationFrame( animate );
 						render();
+						// update();
 
 					}
 
@@ -199,13 +252,67 @@
 						// camera.position.x = Math.cos( timer ) * 200;
 						// camera.position.y = Math.sin( timer ) * 200;
 
-						controls.update();
+						// controls.update();
 
 						camera.lookAt( scene.position );
 
 						renderer.render( scene, camera );
 
 					}
+
+
+
+				// 	function updateForFrame() {  // called by animation support
+    // 				var frameNum = clock.getFrameNumber();
+    // 				var runTime = clock.getElapsedTime();
+    // 				// ... ADD CODE TO UPDATE SCENE FOR THE CURRENT FRAME ...
+    // 				clock.getDelta();
+    // 				var moveDistance = 100 * delta;
+    // 				iphones.translateZ( moveDistance );
+
+    // 				}
+
+				// //------------------ animation support, does not need to be changed ---------
+
+				// 	var clock;  // Keeps track of elapsed time of animation.
+    //         		// clock.getElapsedTime() gives the time, in seconds, that the
+    //        			// animation has been running, not including time when it was
+    //         		// paused.  clock.getFrameNumber() gives the current frame number,
+    //         		// that is, the number of times the scene has been rendered.
+
+				// 	var animating = false;
+
+				// 	function doFrame() {  
+				// 	    if (animating) {
+				// 	        clock.frameNumber++;
+				// 	        updateForFrame();
+				// 	        render();
+				// 	        requestAnimationFrame(doFrame); 
+				// 	    }
+				// 	}
+
+				// 	function startAnimation() {
+				// 	    if (!animating) {
+				// 	        if (!clock) {
+				// 	            clock = new THREE.Clock(false);
+				// 	            clock.frameNumber = 0;
+				// 	            clock.getFrameNumber = function() { return this.frameNumber }
+				// 	        }
+				// 	        clock.start();
+				// 	        animating = true;
+				// 	        requestAnimationFrame(doFrame);
+				// 	    }
+				// 	}
+
+				// 	function pauseAnimation() {
+				// 	    if (animating) {
+				// 	        clock.stop();
+				// 	        animating = false;
+				// 	    }
+				// 	}
+
+
+
 
 				</script>
 
